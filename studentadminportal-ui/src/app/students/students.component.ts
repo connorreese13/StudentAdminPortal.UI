@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { Student } from '../models/api-models/ui-models/student.model';
 import { StudentService } from './student.service';
 
 @Component({
@@ -6,15 +8,18 @@ import { StudentService } from './student.service';
   templateUrl: './students.component.html',
   styleUrls: ['./students.component.css']
 })
-export class StudentsComponent {
+export class StudentsComponent implements OnInit {
+  students: Student[] = [];
+  displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email', 'mobile', 'gender']
+  dataSource: MatTableDataSource<Student> = new MatTableDataSource<Student>();
 
   constructor(private studentService: StudentService){}
   ngOnInit(): void {
     this.studentService.getStudent()
     .subscribe(
       (successResponse)=>{
-        console.log(successResponse);
-
+        this.students = successResponse
+        this.dataSource = new MatTableDataSource<Student>(this.students);
       },
       (errorResponse)=>{
         console.log(errorResponse);
