@@ -5,22 +5,31 @@
 </div>
 
 <div class="container">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div class="row end-xs mt-1">
+    <div class="col-xs-12">
+      <input type="text" class="search-input" placeholder="Search students"
+      [(ngModel)]="filterString"
+      (keyup)="filterStudents()"
+      >
+    </div>
+  </div>
+  <div class="mt-1 mat-elevation-z8">
+   <table mat-table matSort [dataSource]="dataSource" class="">
 
 
     <ng-container matColumnDef="firstName">
-      <th mat-header-cell *matHeaderCellDef> First Name </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
       <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="lastName">
-      <th mat-header-cell *matHeaderCellDef> Last Name </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </th>
       <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="dateOfBirth">
       <th mat-header-cell *matHeaderCellDef> Date of Birth </th>
-      <td mat-cell *matCellDef="let element"> {{element.dateOfBirth}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.dateOfBirth | date:'MM/dd/yyyy'}} </td>
     </ng-container>
 
     <ng-container matColumnDef="email">
@@ -40,7 +49,14 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+   </table>
 
+  <mat-paginator [length]="10"
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 100]"
+              aria-label="Select page">
+  </mat-paginator>
+
+ </div>
 
 </div>
