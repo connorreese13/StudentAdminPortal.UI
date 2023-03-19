@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Gender } from 'src/app/models/api-models/ui-models/gender.model';
@@ -39,6 +40,8 @@ export class ViewStudentComponent implements OnInit {
 
 
   genderList: Gender[] = [];
+
+  @ViewChild('studentDetailsForm') studentDetailsForm?: NgForm
 
   constructor(private readonly studentService: StudentService,
     private readonly route: ActivatedRoute,
@@ -84,20 +87,20 @@ export class ViewStudentComponent implements OnInit {
   }
 
     onUpdate(): void {
-      this.studentService.updateStudent(this.student.id, this.student)
-      .subscribe(
-        (successResponse) =>{
-          this.snackbar.open("Student updated successfully", undefined, {
-            duration: 3000
-          });
+      if(this.studentDetailsForm?.form.valid){
+        this.studentService.updateStudent(this.student.id, this.student)
+        .subscribe(
+          (successResponse) =>{
+            this.snackbar.open("Student updated successfully", undefined, {
+              duration: 3000
+            });
 
-        },
-        (errorResponse) =>{
-          console.log(errorResponse);
-        }
-      )
-
-
+          },
+          (errorResponse) =>{
+            console.log(errorResponse);
+          }
+        )
+      }
     }
 
     onDelete(): void {
@@ -118,22 +121,24 @@ export class ViewStudentComponent implements OnInit {
     }
 
   onAdd(): void{
-    this.studentService.addStudent(this.student)
-    .subscribe(
-      (successResponse) =>{
-        console.log(successResponse);
-        this.snackbar.open("Student added successfully", undefined, {
-          duration: 2000
-        });
-        setTimeout(() => {
-          this.router.navigateByUrl('students')
-        }, 2000);
-      },
-      (errorResponse) =>{
-        console.log(errorResponse);
-      }
-    )
-  }
+    if(this.studentDetailsForm?.form.valid){
+      this.studentService.addStudent(this.student).subscribe(
+        (successResponse) => {
+          console.log(successResponse);
+          this.snackbar.open('Student added successfully', undefined, {
+            duration: 2000,
+          });
+          setTimeout(() => {
+            this.router.navigateByUrl('students');
+          }, 2000);
+        },
+        (errorResponse) => {
+          console.log(errorResponse);
+        }
+      );
+    }
+    }
+
 
   uploadImage(event: any): void {
     if (this.studentId) {
